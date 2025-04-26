@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pengumuman Kelulusan MA MA'ARIF NU 5 SEKAMPUNG</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      text-align: center;
+      padding: 2rem;
+    }
+    .container {
+      background: white;
+      max-width: 600px;
+      margin: auto;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .hidden { display: none; }
+    button {
+      padding: 10px 20px;
+      background-color: #1e90ff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    input {
+      padding: 10px;
+      width: 80%;
+      margin: 1rem 0;
+      font-size: 16px;
+    }
+    .status {
+      font-size: 20px;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="sambutan">
+    <h2>Pengumuman Kelulusan Siswa/i Tahun 2025</h2>
+    <p>Assalamu'alaikum Warahmatullahi Wabarakatuh.</p>
+    <p>
+      Selamat kepada seluruh Taruna/i MA MA'ARIF NU 5 SEKAMPUNG yang telah menyelesaikan jenjang pendidikan selama 3 tahun. Semoga ilmu yang kalian dapatkan menjadi bekal dalam meraih cita-cita dan menebar manfaat di tengah masyarakat.
+    </p>
+    <p>Wassalamu'alaikum Warahmatullahi Wabarakatuh.</p>
+    <p><strong>Kepala Sekolah</strong></p>
+    <button onclick="showLogin()">LOGIN untuk Melihat Kelulusan</button>
+  </div>
+
+  <div class="container hidden" id="cekKelulusan">
+    <h2>Cek Status Kelulusan</h2>
+    <input type="text" id="nisn" placeholder="Masukkan NISN Anda">
+    <br>
+    <button onclick="cekKelulusan()">CEK KELULUSAN</button>
+    <div id="hasil" class="status"></div>
+  </div>
+
+  <script>
+    const API_URL = "https://sheetdb.io/api/v1/o92xhth4o65mg/search?NISN=";
+
+    function showLogin() {
+      document.getElementById('sambutan').classList.add('hidden');
+      document.getElementById('cekKelulusan').classList.remove('hidden');
+    }
+
+    async function cekKelulusan() {
+      const nisn = document.getElementById('nisn').value.trim();
+      const hasil = document.getElementById('hasil');
+      hasil.innerHTML = "Sedang memeriksa...";
+
+      try {
+        const response = await fetch(API_URL + nisn);
+        const data = await response.json();
+
+        if (data.length > 0) {
+          const siswa = data[0];
+          hasil.innerHTML = `Nama: <strong>${siswa["Nama Peserta"]}</strong><br>Status: <strong>${siswa.Status}</strong>`;
+
+          if (siswa.Status.toUpperCase() === "LULUS") {
+            hasil.innerHTML += `<br><br><em>Bagi yang dinyatakan <strong>LULUS</strong>, silakan ambil <strong>Surat Keterangan Lulus</strong> di Ruang Administrasi dengan berpakaian <strong>Rapi dan Sopan</strong>.</em>`;
+          }
+        } else {
+          hasil.innerHTML = "NISN tidak ditemukan. Silakan periksa kembali.";
+        }
+      } catch (error) {
+        hasil.innerHTML = "Terjadi kesalahan. Silakan coba lagi nanti.";
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>
